@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ignf-ui-kit"
+version = "0.1.0"
+description = "Kit reutilizavel de tema (claro/escuro + logo SVG tintado) e idiomas para apps PySide6 da IGNF"
+requires-python = ">=3.10"
+dependencies = ["PySide6"]
+
+[tool.setuptools.packages.find]
+include = ["ignf_ui_kit*"]
+
+[tool.setuptools.package-data]
+ignf_ui_kit = ["theming/base.qss"]

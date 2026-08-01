@@ -1,0 +1,78 @@
+/* Design system padrao do IGNF UI Kit: fundo (dark ou light) + acento
+   configuraveis. Placeholders: {accent} {bg} {surface} {surface_hover}
+   {border} {text_primary} {text_secondary} {text_disabled}
+   Chaves literais ficam duplicadas ({{ }}) porque este arquivo passa
+   por str.format() antes de virar QSS de verdade. Cada app pode
+   fornecer seu proprio base.qss (mesmos placeholders) para customizar. */
+
+QWidget {{
+    background: {bg};
+    color: {text_primary};
+    font-size: 13px;
+    font-family: 'Segoe UI';
+}}
+
+QPushButton, QToolButton {{
+    background: {surface};
+    border: 1px solid {border};
+    color: {text_primary};
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}}
+
+QPushButton:hover, QToolButton:hover {{
+    border-color: {accent};
+    color: {accent};
+}}
+
+QPushButton:disabled {{
+    color: {text_disabled};
+}}
+
+QFrame {{
+    background: {surface};
+    border: 1px solid {border};
+    border-radius: 12px;
+}}
+
+QTableWidget {{
+    background: {surface};
+    border: 1px solid {border};
+    gridline-color: {surface_hover};
+    alternate-background-color: {bg};
+    color: {text_primary};
+}}
+
+QHeaderView::section {{
+    background: {surface};
+    color: {text_primary};
+    border: none;
+    border-bottom: 1px solid {border};
+    padding: 8px;
+}}
+
+QProgressBar {{
+    background: {bg};
+    border: 1px solid {border};
+    border-radius: 8px;
+    text-align: center;
+    color: {text_primary};
+    height: 18px;
+}}
+
+QProgressBar::chunk {{
+    background: {accent};
+    border-radius: 8px;
+}}
+
+QMenu {{
+    background: {surface};
+    border: 1px solid {border};
+    color: {text_primary};
+}}
+
+QMenu::item:selected {{
+    background: {accent};
+    color: {bg};
+}}
