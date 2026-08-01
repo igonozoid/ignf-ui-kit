@@ -26,9 +26,23 @@ _PLACEHOLDER_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# SVG Fonts (<font>/@font-face embutidos) sao um recurso antigo do SVG 1.1
+# mal suportado pelo QSvgRenderer -- costuma sobrar no arquivo exportado do
+# CorelDRAW mesmo depois de converter o texto em curvas (o Qt tenta
+# processar mesmo sem uso, gerando avisos tipo "QFont::setPointSize: Point
+# size <= 0"). Seguro remover: nao afeta nenhum path/forma vetorial.
+_FONT_BLOCK_PATTERN = re.compile(r"<font[\s\S]*?</font>", re.IGNORECASE)
+_FONT_FACE_CSS_PATTERN = re.compile(r"@font-face\s*\{[^}]*\}", re.IGNORECASE)
+
 
 def is_svg(path: Path) -> bool:
     return path.suffix.lower() == ".svg"
+
+
+def _strip_embedded_fonts(svg_text: str) -> str:
+    text = _FONT_BLOCK_PATTERN.sub("", svg_text)
+    text = _FONT_FACE_CSS_PATTERN.sub("", text)
+    return text
 
 
 def _tint_svg_text(svg_text: str, accent_hex: str) -> str:
@@ -36,9 +50,10 @@ def _tint_svg_text(svg_text: str, accent_hex: str) -> str:
 
 
 def render_tinted_svg(svg_path: Path, accent_hex: str, target_width: int | None = None) -> QPixmap | None:
-    """Le o SVG, troca o marcador de cor (fuchsia/magenta/#FF00FF) pelo
-    accent informado e rasteriza. Retorna None se o arquivo nao existir
-    ou nao puder ser lido/renderizado.
+    """Le o SVG, remove fontes SVG incorporadas (nao suportadas/sem uso
+    apos converter texto em curvas), troca o marcador de cor
+    (fuchsia/magenta/#FF00FF) pelo accent informado e rasteriza. Retorna
+    None se o arquivo nao existir ou nao puder ser lido/renderizado.
     """
     if not svg_path.exists():
         return None
@@ -47,7 +62,8 @@ def render_tinted_svg(svg_path: Path, accent_hex: str, target_width: int | None 
     except Exception:
         return None
 
-    tinted_text = _tint_svg_text(svg_text, accent_hex)
+    cleaned_text = _strip_embedded_fonts(svg_text)
+    tinted_text = _tint_svg_text(cleaned_text, accent_hex)
 
     renderer = QSvgRenderer(QByteArray(tinted_text.encode("utf-8")))
     if not renderer.isValid():
