@@ -1,6 +1,0 @@
-Metadata-Version: 2.4
-Name: ignf-ui-kit
-Version: 0.1.0
-Summary: Kit reutilizavel de tema (claro/escuro + logo SVG tintado) e idiomas para apps PySide6 da IGNF
-Requires-Python: >=3.10
-Requires-Dist: PySide6
