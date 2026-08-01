@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from PySide6.QtCore import QByteArray, QSize, Qt
+from PySide6.QtCore import QByteArray, QRectF, QSize, Qt
 from PySide6.QtGui import QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 
@@ -66,6 +66,10 @@ def render_tinted_svg(svg_path: Path, accent_hex: str, target_width: int | None 
     pixmap = QPixmap(size)
     pixmap.fill(Qt.transparent)
     painter = QPainter(pixmap)
-    renderer.render(painter)
+    # Passar o retangulo de destino explicitamente e essencial: sem isso,
+    # o QSvgRenderer pode desenhar no tamanho "nativo" do documento SVG em
+    # vez de encaixar no pixmap que criamos, cortando o que sobra da
+    # imagem (sintoma classico: logo aparece cortado/faltando pedaco).
+    renderer.render(painter, QRectF(0, 0, size.width(), size.height()))
     painter.end()
     return pixmap
